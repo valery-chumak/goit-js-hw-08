@@ -25,6 +25,8 @@ function OnTextareaInput(event){
 
 function onFormSubmit(event) {
     event.preventDefault();
+    comment.email = "";
+    comment.message = "";
     event.currentTarget.reset();
     localStorage.removeItem(STORAGE_KEY);
 }
