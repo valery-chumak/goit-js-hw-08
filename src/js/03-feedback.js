@@ -34,6 +34,7 @@ function OnTextareaInput(event){
 
 function onFormSubmit(event) {
     event.preventDefault();
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(comment));
     event.currentTarget.reset();
     localStorage.removeItem(STORAGE_KEY)
     comment.email = "";
