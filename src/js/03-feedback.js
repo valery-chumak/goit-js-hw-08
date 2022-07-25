@@ -1,43 +1,36 @@
 import throttle from "lodash.throttle";
 const form = document.querySelector('.feedback-form');
-const email = document.querySelector('input');
-const textarea = document.querySelector('textarea');
 const STORAGE_KEY = 'feedback-form-state';
 
-// form.addEventListener('input', onFormInput);
+form.addEventListener('input', throttle(onFormInput, 500));
 form.addEventListener('submit', onFormSubmit);
-email.addEventListener('input', throttle(onEmailInput, 500));
-textarea.addEventListener('input', throttle(OnTextareaInput, 500));
-let comment = {};
-populateComment();
 
-function onEmailInput(event) {
-    const email = event.target.value;
-    comment.email = email;
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(comment));
-    
-}
-function OnTextareaInput(event){
-    const message = event.target.value;
-    comment.message = message;
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(comment));
-}
+initForm();
+
 
 function onFormSubmit(event) {
     event.preventDefault();
-    comment.email = "";
-    comment.message = "";
+    const formData = new FormData(form);
+    formData.forEach((name, value) => console.log(name, value));
     event.currentTarget.reset();
     localStorage.removeItem(STORAGE_KEY);
 }
-function populateComment() {
-    const savedComment = localStorage.getItem(STORAGE_KEY);
-    const savedCommentParsed = JSON.parse(savedComment);
+function onFormInput(event) {
+    let persistedInputs = localStorage.getItem(STORAGE_KEY);
+    persistedInputs = persistedInputs ? JSON.parse(persistedInputs) : {};
+    persistedInputs[event.target.name] = event.target.value;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(persistedInputs));
+}
 
+
+function initForm() {
+    let savedComment = localStorage.getItem(STORAGE_KEY);
     
     if (savedComment) {
-        console.log(savedComment);
-        email.value = savedCommentParsed.email;
-        textarea.value = savedCommentParsed.message;
+        savedComment = JSON.parse(savedComment);
+        Object.entries(savedComment).forEach(([name, value]) => {
+            form.elements[name].value = value;
+        });
+        
     }
 }

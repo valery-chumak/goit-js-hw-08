@@ -16,11 +16,7 @@ const iframe = document.querySelector('iframe');
         localStorage.setItem("videoplayer-current-time", time.seconds);
     },1000));
 
-    player.setCurrentTime(localStorage.getItem("videoplayer-current-time")).then(function() {
-    }).catch(function(error) {
-        switch (error.name) {
-            case 'RangeError':
-                assert("the time was less than 0 or greater than the video’s duration");
-                break;
-        }
-    });
+    const savedTime = localStorage.getItem("videoplayer-current-time");
+    if (savedTime) {
+    player.setCurrentTime(savedTime);
+    }
